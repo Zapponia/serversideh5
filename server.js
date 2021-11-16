@@ -16,7 +16,7 @@ var server = http.createServer(function(req, res) {
                 res.write(JSON.stringify(data));
                 res.end();
             }
-        )} else if(req.method === 'POST'){
+        )} else if(req.url === '/add' && req.method === 'POST'){
             con.query("INSERT INTO users (Username, Password) VALUES ('test', 'test')", function(err,data){
                 res.write(JSON.stringify(data));
                 res.end();
@@ -26,7 +26,7 @@ var server = http.createServer(function(req, res) {
                 res.write(JSON.stringify(data));
                 res.end();
             }
-        )} else if(req.method === 'DELETE'){
+        )} else if(req.url === '/remove' && req.method === 'DELETE'){
             con.query("DELETE FROM users WHERE Username = 'test'", function(err,data){
                 res.write(JSON.stringify(data));
                 res.end();
