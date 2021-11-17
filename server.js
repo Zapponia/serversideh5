@@ -11,6 +11,48 @@ var con = mysql.createConnection({
 
 var server = http.createServer(function(req, res) {
     con.connect(function(err) {
+        switch(req.url) {
+            case '/user/createUser':
+                con.query("INSERT INTO users (Username, Password) VALUES ('test', 'test')", function(err,data){
+                    res.write(JSON.stringify(data));
+                    res.end();
+                });
+              break;
+            case '/user/editUser':
+                con.query("UPDATE users SET Username = 'test123' WHERE Username = 'test'", function(err,data){
+                    res.write(JSON.stringify(data));
+                    res.end();
+                });
+              break;
+            case '/user/getUsers':
+                con.query("SELECT * FROM users", function(err,data) {
+                    res.write(JSON.stringify(data));
+                    res.end();
+                });
+                break;
+            case '/user/getUser':
+                // code block
+                break;
+            case '/user/deleteUser':
+                con.query("DELETE FROM users WHERE Username = 'test'", function(err,data){
+                    res.write(JSON.stringify(data));
+                    res.end();
+                });
+                break; 
+            default:
+                res.write(404)
+                res.end(JSON.stringify({ message: 'Route Not Found'}))
+          };
+    });
+});
+
+server.listen(8080);
+
+
+
+/*
+
+
         if(req.method === 'GET'){
             con.query("SELECT * FROM users", function(err,data) {
                 res.write(JSON.stringify(data));
@@ -34,8 +76,5 @@ var server = http.createServer(function(req, res) {
         )} else{
             res.write(404)
             res.end(JSON.stringify({ message: 'Route Not Found'}))
-        }
-    });
-});
-
-server.listen(8080);
+        } 
+*/
