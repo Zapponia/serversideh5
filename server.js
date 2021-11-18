@@ -13,13 +13,13 @@ var server = http.createServer(function(req, res) {
     con.connect(function(err) {
         switch(req.url) {
             case '/user/createUser':
-                con.query("INSERT INTO users (Username, Password) VALUES ('test', 'test')", function(err,data){
+                con.query("INSERT INTO users (Username, Password) VALUES (?, ?)"["username", "password"], function(err,data){
                     res.write(JSON.stringify(data));
                     res.end();
                 });
               break;
             case '/user/editUser':
-                con.query("UPDATE users SET Username = 'test123' WHERE Username = 'test'", function(err,data){
+                con.query("UPDATE users SET Username = ? WHERE Username = ?",['lmao', 'test123'], function(err,data){
                     res.write(JSON.stringify(data));
                     res.end();
                 });
@@ -34,7 +34,7 @@ var server = http.createServer(function(req, res) {
                 // code block
                 break;
             case '/user/deleteUser':
-                con.query("DELETE FROM users WHERE Username = 'test'", function(err,data){
+                con.query("DELETE FROM users WHERE Username = ?",['lmao'], function(err,data){
                     res.write(JSON.stringify(data));
                     res.end();
                 });
@@ -48,11 +48,7 @@ var server = http.createServer(function(req, res) {
 
 server.listen(8080);
 
-
-
 /*
-
-
         if(req.method === 'GET'){
             con.query("SELECT * FROM users", function(err,data) {
                 res.write(JSON.stringify(data));
