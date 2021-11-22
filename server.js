@@ -56,7 +56,7 @@ var server = http.createServer(function(req, res) {
                     });
                     break;
                 case '/character/deleteCharacter':
-                    con.query("DELETE FROM Characters WHERE name = '?'",['jaej'], function(err,data) {
+                    con.query("DELETE FROM Characters WHERE name = ?",['jaej'], function(err,data) {
                         res.write(JSON.stringify(data));
                         res.end();
                     });
@@ -74,7 +74,10 @@ var server = http.createServer(function(req, res) {
                     });
                     break;
                 case '/user/getUser':
-                    // code block
+                    con.query("SELECT * FROM users WHERE id = ?", [1], function(err,data){
+                        res.write(JSON.stringify(data));
+                        res.end();
+                    })
                     break;
                 case '/character/getCharacters':
                     con.query("SELECT * FROM Characters", function(err,data) {
@@ -83,7 +86,10 @@ var server = http.createServer(function(req, res) {
                     });
                     break;
                 case '/character/getCharacter':
-                    // code block
+                    con.query("SELECT * FROM Characters WHERE id = ?", [1], function(err,data){
+                        res.write(JSON.stringify(data));
+                        res.end();
+                    })
                 break;
                 default:
                     res.statusCode = 404;
