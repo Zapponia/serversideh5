@@ -14,33 +14,63 @@ var server = http.createServer(function(req, res) {
         if(req.method === 'POST') {
         switch(req.url) {
             case '/user/createUser':
-                con.query("INSERT INTO users (Username, Password) VALUES (?, ?)",['lmaoeren', 'test123'], function(err,data){
-                    res.write(JSON.stringify(data));
-                    res.end();
+                var buffer = "";
+                var params = [];
+                req.on("data", function(chunk) {
+                    buffer += chunk;
                 });
-              break;
-            case '/user/editUser':
-                con.query("UPDATE users SET Username = ? WHERE Username = ?",['lmao', 'test123'], function(err,data){
-                    res.write(JSON.stringify(data));
-                    res.end();
-                });
-              break;
-            case '/user/getUsers':
-                con.query("SELECT * FROM users", function(err,data) {
-                    res.write(JSON.stringify(data));
-                    res.end();
-                });
-                break;
-                case '/user/editUser':
-                    con.query("UPDATE users SET Username = ? WHERE Username = ?",['test1234', 'test'], function(err,data) {
+                req.on("end", function(){
+                    var sp = buffer.split('&');
+                    for (var i = 0; i < sp.length; i++) {
+                        var sub = sp[i].split('=');
+                        for (var j = 0; j < sub.length; j++) {
+                            params.push(sub[j]);
+                        }
+                    }
+                    con.query("INSERT INTO users (Username, Password) VALUES (?, ?)",[params[1], params[3]], function(err,data){
                         res.write(JSON.stringify(data));
                         res.end();
                     });
+                });
+              break;
+                case '/user/editUser':
+                    var buffer = "";
+                    var params = [];
+                    req.on("data", function(chunk) {
+                        buffer += chunk;
+                    });
+                    req.on("end", function(){
+                        var sp = buffer.split('&');
+                        for (var i = 0; i < sp.length; i++) {
+                            var sub = sp[i].split('=');
+                            for (var j = 0; j < sub.length; j++) {
+                                params.push(sub[j]);
+                            }
+                        }
+                        con.query("UPDATE users SET Username = ? WHERE ID = ?",[params[1], parseInt(params[3])], function(err,data) {
+                            res.write(JSON.stringify(data));
+                            res.end();
+                        });
+                    });
                 break;
                 case '/user/deleteUser':
-                    con.query("DELETE FROM users WHERE Username = ?",['lmao'], function(err,data){
-                        res.write(JSON.stringify(data));
-                        res.end();
+                    var buffer = "";
+                    var params = [];
+                    req.on("data", function(chunk) {
+                        buffer += chunk;
+                    });
+                    req.on("end", function(){
+                        var sp = buffer.split('&');
+                        for (var i = 0; i < sp.length; i++) {
+                            var sub = sp[i].split('=');
+                            for (var j = 0; j < sub.length; j++) {
+                                params.push(sub[j]);
+                            }
+                        }
+                        con.query("DELETE FROM users WHERE ID = ?",[parseInt(params[1])], function(err,data){
+                            res.write(JSON.stringify(data));
+                            res.end();
+                        });
                     });
                     break;
                 case '/character/createCharacter':
@@ -100,31 +130,3 @@ var server = http.createServer(function(req, res) {
 });
 
 server.listen(8080);
-
-/*
-
-        if(req.method === 'GET') {
-            con.query("SELECT * FROM users", function(err,data) {
-                res.write(JSON.stringify(data));
-                res.end();
-            }
-        )} else if(req.url === '/add' && req.method === 'POST'){
-            con.query("INSERT INTO users (Username, Password) VALUES ('test', 'test')", function(err,data){
-                res.write(JSON.stringify(data));
-                res.end();
-            }
-        )} else if(req.method === 'PUT'){
-            con.query("UPDATE users SET Username = 'test123' WHERE Username = 'test'", function(err,data){
-                res.write(JSON.stringify(data));
-                res.end();
-            }
-        )} else if(req.url === '/remove' && req.method === 'DELETE'){
-            con.query("DELETE FROM users WHERE Username = 'test'", function(err,data){
-                res.write(JSON.stringify(data));
-                res.end();
-            }
-        )} else{
-            res.write(404)
-            res.end(JSON.stringify({ message: 'Route Not Found'}))
-        } 
-*/
