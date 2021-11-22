@@ -13,7 +13,7 @@ var server = http.createServer(function(req, res) {
     con.connect(function(err) {
         switch(req.url) {
             case '/user/createUser':
-                con.query("INSERT INTO users (Username, Password) VALUES (?, ?)", function(err,data){
+                con.query("INSERT INTO users (Username, Password) VALUES (?, ?)",['lmaoeren', 'test123'], function(err,data){
                     res.write(JSON.stringify(data));
                     res.end();
                 });
