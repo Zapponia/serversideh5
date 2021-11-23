@@ -1,5 +1,6 @@
 //const { read } = require("fs");
 var http = require("http");
+const { url } = require("inspector");
 var mysql = require("mysql");
 
 var con = mysql.createConnection({
@@ -96,7 +97,8 @@ var server = http.createServer(function(req, res) {
                     res.end(JSON.stringify({ message: 'Route Not Found'}))
             };
         } else if (req.method === 'GET') {
-            switch(req.url) {
+            var url = req.url.split('?')
+            switch(url[0]) {
                 case '/user/getUsers':
                     con.query("SELECT * FROM users", function(err,data) {
                         res.write(JSON.stringify(data));
@@ -104,7 +106,7 @@ var server = http.createServer(function(req, res) {
                     });
                     break;
                 case '/user/getUser':
-                    con.query("SELECT * FROM users WHERE id = ?", [1], function(err,data){
+                    con.query("SELECT * FROM users WHERE id = ?", [parseInt(url[1])], function(err,data){
                         res.write(JSON.stringify(data));
                         res.end();
                     })
@@ -116,7 +118,7 @@ var server = http.createServer(function(req, res) {
                     });
                     break;
                 case '/character/getCharacter':
-                    con.query("SELECT * FROM Characters WHERE id = ?", [1], function(err,data){
+                    con.query("SELECT * FROM Characters WHERE id = ?", [parseInt(url[1])], function(err,data){
                         res.write(JSON.stringify(data));
                         res.end();
                     })
