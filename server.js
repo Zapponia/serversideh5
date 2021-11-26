@@ -164,6 +164,11 @@ var server = http.createServer(function(req, res) {
             };
         } else if (req.method === 'GET') {
             var url = req.url.split('?');
+            var param = "";
+            if(url.length > 1) {
+                param = url[1].split('=')
+            }
+            res.write(JSON.stringify(url));
             switch(url[0]) {
                 case '/user/getUsers':
                     con.query("SELECT * FROM users", function(err,data) {
@@ -176,7 +181,7 @@ var server = http.createServer(function(req, res) {
                     });
                     break;
                 case '/user/getUser':
-                    con.query("SELECT * FROM users WHERE id = ?", [parseInt(url[1])], function(err,data){
+                    con.query("SELECT * FROM users WHERE id = ?", [parseInt(param[1])], function(err,data){
                         if (data) {
                             res.write(JSON.stringify(data));
                         } else {
@@ -196,7 +201,7 @@ var server = http.createServer(function(req, res) {
                     });
                     break;
                 case '/character/getCharacter':
-                    con.query("SELECT * FROM Characters WHERE id = ?", [parseInt(url[1])], function(err,data){
+                    con.query("SELECT * FROM Characters WHERE id = ?", [parseInt(param[1])], function(err,data){
                         if (data) {
                             res.write(JSON.stringify(data));
                         } else {
