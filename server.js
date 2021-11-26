@@ -74,21 +74,63 @@ var server = http.createServer(function(req, res) {
                     });
                     break;
                 case '/character/createCharacter':
-                    con.query("INSERT INTO Characters (name, userid, race, class, age, gender, description) VALUES (?, ?, ?, ?, ?, ?,?)",['test', 1, 'test123', 'test123', 21, 'female', 'testing'], function(err,data) {
-                        res.write(JSON.stringify(data));
-                        res.end();
+                    var buffer = "";
+                    var params = [];
+                    req.on("data", function(chunk) {
+                        buffer += chunk;
+                    });
+                    req.on("end", function(){
+                        var sp = buffer.split('&');
+                        for (var i = 0; i < sp.length; i++) {
+                            var sub = sp[i].split('=');
+                            for (var j = 0; j < sub.length; j++) {
+                                params.push(sub[j]);
+                            }
+                        }
+                        con.query("INSERT INTO Characters (name, userid, race, class, age, gender, description) VALUES (?, ?, ?, ?, ?, ?,?)",[params[1], parseInt(params[3]), params[5], params[7], parseInt(params[9]), params[11], params[12]], function(err,data) {
+                            res.write(JSON.stringify(data));
+                            res.end();
+                        });
                     });
                     break;
                 case '/character/editCharacter':
-                    con.query("UPDATE Characters SET name = ?, race = ?, class = ?, age = ?, gender = ?, description = ? WHERE name = ?",['test123', 'test', 'test', 25, 'male', 'testify', 'test'], function(err,data) {
-                        res.write(JSON.stringify(data));
-                        res.end();
+                    var buffer = "";
+                    var params = [];
+                    req.on("data", function(chunk) {
+                        buffer += chunk;
+                    });
+                    req.on("end", function(){
+                        var sp = buffer.split('&');
+                        for (var i = 0; i < sp.length; i++) {
+                            var sub = sp[i].split('=');
+                            for (var j = 0; j < sub.length; j++) {
+                                params.push(sub[j]);
+                            }
+                        }
+                        con.query("UPDATE Characters SET name = ?, race = ?, class = ?, age = ?, gender = ?, description = ? WHERE id = ?",[params[1], params[3], params[5], parseInt(params[7]), params[9], params[11], parseInt(params[13])], function(err,data) {
+                            res.write(JSON.stringify(data));
+                            res.end();
+                        });
                     });
                     break;
                 case '/character/deleteCharacter':
-                    con.query("DELETE FROM Characters WHERE name = ?",['jaej'], function(err,data) {
-                        res.write(JSON.stringify(data));
-                        res.end();
+                    var buffer = "";
+                    var params = [];
+                    req.on("data", function(chunk) {
+                        buffer += chunk;
+                    });
+                    req.on("end", function(){
+                        var sp = buffer.split('&');
+                        for (var i = 0; i < sp.length; i++) {
+                            var sub = sp[i].split('=');
+                            for (var j = 0; j < sub.length; j++) {
+                                params.push(sub[j]);
+                            }
+                        }
+                        con.query("DELETE FROM Characters WHERE ID = ?",[parseInt(params[1])], function(err,data) {
+                            res.write(JSON.stringify(data));
+                            res.end();
+                        });
                     });
                 break;  
                 default:
