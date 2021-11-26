@@ -56,7 +56,7 @@ var server = http.createServer(function(req, res) {
                         if (data) {
                             res.write(JSON.stringify(data));
                         } else {
-                            res.statusCode(500);
+                            res.statusCode = 500;
                             res.write(JSON.stringify(err));
                         }
                         res.end();
