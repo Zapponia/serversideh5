@@ -29,7 +29,11 @@ var server = http.createServer(function(req, res) {
                         }
                     }
                     con.query("INSERT INTO users (Username, Password) VALUES (?, ?)",[params[1], params[3]], function(err,data){
-                        res.write(JSON.stringify(data));
+                        if (data) {
+                            res.write(JSON.stringify(data));
+                        } else {
+                            res.write(JSON.stringify(err));
+                        }
                         res.end();
                     });
                 });
@@ -49,7 +53,11 @@ var server = http.createServer(function(req, res) {
                             }
                         }
                         con.query("UPDATE users SET Username = ? WHERE ID = ?",[params[1], parseInt(params[3])], function(err,data) {
-                            res.write(JSON.stringify(data));
+                            if (data) {
+                                res.write(JSON.stringify(data));
+                            } else {
+                                res.write(JSON.stringify(err));
+                            }
                             res.end();
                         });
                     });
@@ -69,7 +77,11 @@ var server = http.createServer(function(req, res) {
                             }
                         }
                         con.query("DELETE FROM users WHERE ID = ?",[parseInt(params[1])], function(err,data){
-                            res.write(JSON.stringify(data));
+                            if (data) {
+                                res.write(JSON.stringify(data));
+                            } else {
+                                res.write(JSON.stringify(err));
+                            }
                             res.end();
                         });
                     });
@@ -89,7 +101,11 @@ var server = http.createServer(function(req, res) {
                             }
                         }
                         con.query("INSERT INTO Characters (name, userid, race, class, age, gender, description) VALUES (?, ?, ?, ?, ?, ?,?)",[params[1], parseInt(params[3]), params[5], params[7], parseInt(params[9]), params[11], params[12]], function(err,data) {
-                            res.write(JSON.stringify(data));
+                            if (data) {
+                                res.write(JSON.stringify(data));
+                            } else {
+                                res.write(JSON.stringify(err));
+                            }
                             res.end();
                         });
                     });
@@ -109,7 +125,11 @@ var server = http.createServer(function(req, res) {
                             }
                         }
                         con.query("UPDATE Characters SET name = ?, race = ?, class = ?, age = ?, gender = ?, description = ? WHERE id = ?",[params[1], params[3], params[5], parseInt(params[7]), params[9], params[11], parseInt(params[13])], function(err,data) {
-                            res.write(JSON.stringify(data));
+                            if (data) {
+                                res.write(JSON.stringify(data));
+                            } else {
+                                res.write(JSON.stringify(err));
+                            }
                             res.end();
                         });
                     });
@@ -129,7 +149,11 @@ var server = http.createServer(function(req, res) {
                             }
                         }
                         con.query("DELETE FROM Characters WHERE ID = ?",[parseInt(params[1])], function(err,data) {
-                            res.write(JSON.stringify(data));
+                            if (data) {
+                                res.write(JSON.stringify(data));
+                            } else {
+                                res.write(JSON.stringify(err));
+                            }
                             res.end();
                         });
                     });
@@ -139,29 +163,45 @@ var server = http.createServer(function(req, res) {
                     res.end(JSON.stringify({ message: 'Route Not Found'}))
             };
         } else if (req.method === 'GET') {
-            var url = req.url.split('?')
+            var url = req.url.split('?');
             switch(url[0]) {
                 case '/user/getUsers':
                     con.query("SELECT * FROM users", function(err,data) {
-                        res.write(JSON.stringify(data));
+                        if (data) {
+                            res.write(JSON.stringify(data));
+                        } else {
+                            res.write(JSON.stringify(err));
+                        }
                         res.end();
                     });
                     break;
                 case '/user/getUser':
                     con.query("SELECT * FROM users WHERE id = ?", [parseInt(url[1])], function(err,data){
-                        res.write(JSON.stringify(data));
+                        if (data) {
+                            res.write(JSON.stringify(data));
+                        } else {
+                            res.write(JSON.stringify(err));
+                        }
                         res.end();
                     })
                     break;
                 case '/character/getCharacters':
-                    con.query("SELECT * FROM Characters", function(err,data) {
-                        res.write(JSON.stringify(data));
+                    con.query("SELECT * FROM Characters ", function(err,data) {
+                        if (data) {
+                            res.write(JSON.stringify(data));
+                        } else {
+                            res.write(JSON.stringify(err));
+                        }
                         res.end();
                     });
                     break;
                 case '/character/getCharacter':
                     con.query("SELECT * FROM Characters WHERE id = ?", [parseInt(url[1])], function(err,data){
-                        res.write(JSON.stringify(data));
+                        if (data) {
+                            res.write(JSON.stringify(data));
+                        } else {
+                            res.write(JSON.stringify(err));
+                        }
                         res.end();
                     })
                 break;
