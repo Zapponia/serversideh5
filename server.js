@@ -14,6 +14,30 @@ var server = http.createServer(function(req, res) {
     con.connect(function(err) {
         if(req.method === 'POST') {
         switch(req.url) {
+            case '/login':
+                var buffer = "";
+                var params = [];
+                req.on("data", function(chunk) {
+                    buffer += chunk;
+                });
+                req.on("end", function(){
+                    var sp = buffer.split('&');
+                    for (var i = 0; i < sp.length; i++) {
+                        var sub = sp[i].split('=');
+                        for (var j = 0; j < sub.length; j++) {
+                            params.push(sub[j]);
+                        }
+                    }
+                    con.query("SELECT id FROM users WHERE username = ? AND password = ?",[params[1], params[3]], function(err,data){
+                        if (data) {
+                            res.write(JSON.stringify(data));
+                        } else {
+                            res.write(JSON.stringify(err));
+                        }
+                        res.end();
+                    });
+                });
+                break;
             case '/user/createUser':
                 var buffer = "";
                 var params = [];
@@ -32,6 +56,7 @@ var server = http.createServer(function(req, res) {
                         if (data) {
                             res.write(JSON.stringify(data));
                         } else {
+                            res.statusCode(500);
                             res.write(JSON.stringify(err));
                         }
                         res.end();
@@ -168,7 +193,6 @@ var server = http.createServer(function(req, res) {
             if(url.length > 1) {
                 param = url[1].split('=')
             }
-            res.write(JSON.stringify(url));
             switch(url[0]) {
                 case '/user/getUsers':
                     con.query("SELECT * FROM users", function(err,data) {
@@ -191,7 +215,7 @@ var server = http.createServer(function(req, res) {
                     })
                     break;
                 case '/character/getCharacters':
-                    con.query("SELECT * FROM Characters ", function(err,data) {
+                    con.query("SELECT * FROM Characters WHERE userid = ?", [parseInt(param[1])], function(err,data) {
                         if (data) {
                             res.write(JSON.stringify(data));
                         } else {
